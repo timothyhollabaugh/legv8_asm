@@ -308,7 +308,7 @@ named!(
                     (Instruction::ConditionalBranch { address: a, condition: c })
                 ) |
                 do_parse!(
-                    a: ws!(parse_immediate_19) >>
+                    a: ws!(parse_immediate_26) >>
                     (Instruction::Branch { address: a })
                 )
             ) |
@@ -317,7 +317,7 @@ named!(
                 (Instruction::BranchRegister { r: r })
             ) |
             "BL" => do_parse!(
-                a: parse_immediate_32 >>
+                a: parse_immediate_26 >>
                 (Instruction::BranchLink { address: a })
             )
 
