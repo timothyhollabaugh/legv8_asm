@@ -75,3 +75,22 @@ impl From<Immediate19> for [Bit; 19] {
         result
     }
 }
+
+#[derive(PartialEq)]
+pub struct Immediate26(u32);
+
+impl From<u16> for Immediate26 {
+    fn from(number: u32) -> Immediate26 {
+        Immediate26(number)
+    }
+}
+
+impl From<Immediate26> for [Bit; 26] {
+    fn from(immediate: Immediate26) -> [Bit; 26] {
+        let result: [Bit; 26];
+        for i in 0..26 {
+            result[i] = Bit::from_u8((immediate.0 >> i) as u8 & 1_u8).unwrap();
+        }
+        result
+    }
+}
