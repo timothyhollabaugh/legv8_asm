@@ -6,6 +6,7 @@ use immediate::Immediate9;
 use immediate::Immediate12;
 use immediate::Immediate16;
 use immediate::Immediate19;
+use immediate::Immediate26;
 
 #[derive(Debug, PartialEq)]
 pub enum Instruction {

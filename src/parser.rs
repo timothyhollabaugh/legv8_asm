@@ -11,6 +11,7 @@ use immediate::Immediate9;
 use immediate::Immediate12;
 use immediate::Immediate16;
 use immediate::Immediate19;
+use immediate::Immediate26;
 
 /// Parse a register in the form `X23` to an `instruction::Register`
 named!(
@@ -88,6 +89,15 @@ named!(
     do_parse!(
         i: map_res!(digit, |d: &str| d.parse::<u32>())
         (Immediate19(i))
+    )
+);
+
+/// Parse a 26 bit immidiate value
+named!(
+    parse_immediate_26<&str, Immediate26>,
+    do_parse!(
+        i: map_res!(digit, |d: &str| d.parse::<u32>())
+        (Immediate26(i))
     )
 );
 
