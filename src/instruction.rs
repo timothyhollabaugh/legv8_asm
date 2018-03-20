@@ -155,13 +155,13 @@ pub enum Instruction {
     },
 
     Branch {
-        address: Immediate19,
+        address: Immediate26,
     },
     BranchRegister {
         r: Register,
     },
     BranchLink {
-        address: Immediate19,
+        address: Immediate26,
     },
 }
 
