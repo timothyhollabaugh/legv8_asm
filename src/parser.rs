@@ -7,6 +7,7 @@ use shift16::Shift16;
 use condition::Condition;
 use instruction::Instruction;
 
+use immediate::Immediate6;
 use immediate::Immediate9;
 use immediate::Immediate12;
 use immediate::Immediate16;
@@ -56,20 +57,29 @@ named!(
     )
 );
 
+/// Parse a 6 bit immidiate value
+named!(
+    parse_immediate_6<&str, Immediate6>,
+    do_parse!(
+        i: map_res!(digit, |d: &str| d.parse::<u8>()) >>
+        (Immediate6(i))
+    )
+);
+
 /// Parse a 9 bit immidiate value
 named!(
     parse_immediate_9<&str, Immediate9>,
     do_parse!(
-        i: map_res!(digit, |d: &str| d.parse::<u16>())
+        i: map_res!(digit, |d: &str| d.parse::<u16>()) >>
         (Immediate9(i))
     )
 );
 
 /// Parse a 12 bit immidiate value
 named!(
-    parse_immediate_12<&str, Immediate16>,
+    parse_immediate_12<&str, Immediate12>,
     do_parse!(
-        i: map_res!(digit, |d: &str| d.parse::<u16>())
+        i: map_res!(digit, |d: &str| d.parse::<u16>()) >>
         (Immediate12(i))
     )
 );
@@ -78,7 +88,7 @@ named!(
 named!(
     parse_immediate_16<&str, Immediate16>,
     do_parse!(
-        i: map_res!(digit, |d: &str| d.parse::<u16>())
+        i: map_res!(digit, |d: &str| d.parse::<u16>()) >>
         (Immediate16(i))
     )
 );
@@ -87,7 +97,7 @@ named!(
 named!(
     parse_immediate_19<&str, Immediate19>,
     do_parse!(
-        i: map_res!(digit, |d: &str| d.parse::<u32>())
+        i: map_res!(digit, |d: &str| d.parse::<u32>()) >>
         (Immediate19(i))
     )
 );
@@ -96,7 +106,7 @@ named!(
 named!(
     parse_immediate_26<&str, Immediate26>,
     do_parse!(
-        i: map_res!(digit, |d: &str| d.parse::<u32>())
+        i: map_res!(digit, |d: &str| d.parse::<u32>()) >>
         (Immediate26(i))
     )
 );
@@ -282,13 +292,13 @@ named!(
             "LSR" => do_parse!(
                 d: parse_register >> ws!(tag!(",")) >>
                 n: parse_register >> ws!(tag!(",")) >>
-                i: parse_immediate_12 >>
+                i: parse_immediate_6 >>
                 (Instruction::LogicalShiftRight { n: n, m: i, destination: d })
             ) |
             "LSL" => do_parse!(
                 d: parse_register >> ws!(tag!(",")) >>
                 n: parse_register >> ws!(tag!(",")) >>
-                i: parse_immediate_12 >>
+                i: parse_immediate_6 >>
                 (Instruction::LogicalShiftLeft { n: n, m: i, destination: d })
             ) |
             "CBZ" => do_parse!(
@@ -320,7 +330,6 @@ named!(
                 a: parse_immediate_26 >>
                 (Instruction::BranchLink { address: a })
             )
-
         ) >>
         (instruction)
     )
@@ -330,7 +339,12 @@ named!(
 fn test_branch_link_parse() {
     assert_eq!(
         parse_instruction("BL 2500"),
-        IResult::Done("", Instruction::BranchLink { address: 2500_u32 })
+        IResult::Done(
+            "",
+            Instruction::BranchLink {
+                address: Immediate26(2500_u32),
+            }
+        )
     );
 }
 
@@ -346,7 +360,12 @@ fn test_branch_register_parse() {
 fn test_branch_parse() {
     assert_eq!(
         parse_instruction("B 25"),
-        IResult::Done("", Instruction::Branch { address: 25_u32 })
+        IResult::Done(
+            "",
+            Instruction::Branch {
+                address: Immediate26(25_u32),
+            }
+        )
     );
 }
 
@@ -357,7 +376,7 @@ fn test_conditional_branch_parse() {
         IResult::Done(
             "",
             Instruction::ConditionalBranch {
-                address: 25_u32,
+                address: Immediate19(25_u32),
                 condition: Condition::LessThan,
             }
         )
@@ -371,7 +390,7 @@ fn test_compare_branch_not_zero_parse() {
         IResult::Done(
             "",
             Instruction::CompareBranchNotZero {
-                address: 25_u32,
+                address: Immediate19(25_u32),
                 r: Register::X1,
             }
         )
@@ -385,7 +404,7 @@ fn test_compare_branch_zero_parse() {
         IResult::Done(
             "",
             Instruction::CompareBranchZero {
-                address: 25_u32,
+                address: Immediate19(25_u32),
                 r: Register::X1,
             }
         )
@@ -400,7 +419,7 @@ fn test_logical_shift_left_parse() {
             "",
             Instruction::LogicalShiftLeft {
                 n: Register::X2,
-                m: 10_u16,
+                m: Immediate6(10_u8),
                 destination: Register::X1,
             }
         )
@@ -415,7 +434,7 @@ fn test_logical_shift_right_parse() {
             "",
             Instruction::LogicalShiftRight {
                 n: Register::X2,
-                m: 10_u16,
+                m: Immediate6(10_u8),
                 destination: Register::X1,
             }
         )
@@ -430,7 +449,7 @@ fn test_and_immidiate_set_flags_parse() {
             "",
             Instruction::AndImmediateSetFlags {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -460,7 +479,7 @@ fn test_and_immidiate_parse() {
             "",
             Instruction::AndImmediate {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -475,7 +494,7 @@ fn test_or_immidiate_parse() {
             "",
             Instruction::OrImmediate {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -490,7 +509,7 @@ fn test_xor_immidiate_parse() {
             "",
             Instruction::XorImmediate {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -549,7 +568,7 @@ fn test_move_keep_without_shift_parse() {
         IResult::Done(
             "",
             Instruction::MoveKeep {
-                immediate: 255_u16,
+                immediate: Immediate16(255_u16),
                 shift: Shift16::Shift0,
                 destination: Register::X9,
             }
@@ -564,7 +583,7 @@ fn test_move_keep_with_shift_parse() {
         IResult::Done(
             "",
             Instruction::MoveKeep {
-                immediate: 255_u16,
+                immediate: Immediate16(255_u16),
                 shift: Shift16::Shift16,
                 destination: Register::X9,
             }
@@ -579,7 +598,7 @@ fn test_move_zero_without_shift_parse() {
         IResult::Done(
             "",
             Instruction::MoveZero {
-                immediate: 255_u16,
+                immediate: Immediate16(255_u16),
                 shift: Shift16::Shift0,
                 destination: Register::X9,
             }
@@ -594,7 +613,7 @@ fn test_move_zero_with_shift_parse() {
         IResult::Done(
             "",
             Instruction::MoveZero {
-                immediate: 255_u16,
+                immediate: Immediate16(255_u16),
                 shift: Shift16::Shift16,
                 destination: Register::X9,
             }
@@ -610,7 +629,7 @@ fn test_load_byte_parse() {
             "",
             Instruction::LoadByte {
                 address: Register::X2,
-                offset: 40_u16,
+                offset: Immediate9(40_u16),
                 data: Register::X1,
             }
         )
@@ -625,7 +644,7 @@ fn test_store_byte_parse() {
             "",
             Instruction::StoreByte {
                 address: Register::X2,
-                offset: 40_u16,
+                offset: Immediate9(40_u16),
                 data: Register::X1,
             }
         )
@@ -640,7 +659,7 @@ fn test_load_parse() {
             "",
             Instruction::Load {
                 address: Register::X2,
-                offset: 40_u16,
+                offset: Immediate9(40_u16),
                 data: Register::X1,
             }
         )
@@ -655,7 +674,7 @@ fn test_store_parse() {
             "",
             Instruction::Store {
                 address: Register::X2,
-                offset: 40_u16,
+                offset: Immediate9(40_u16),
                 data: Register::X1,
             }
         )
@@ -670,7 +689,7 @@ fn test_add_immidiate_set_flags_parse() {
             "",
             Instruction::AddImmediateSetFlags {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -685,7 +704,7 @@ fn test_sub_immidiate_set_flags_parse() {
             "",
             Instruction::SubtractImmediateSetFlags {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -730,7 +749,7 @@ fn test_add_immidiate_parse() {
             "",
             Instruction::AddImmediate {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -745,7 +764,7 @@ fn test_sub_immidiate_parse() {
             "",
             Instruction::SubtractImmediate {
                 n: Register::X2,
-                m: 40_u16,
+                m: Immediate12(40_u16),
                 destination: Register::X1,
             }
         )
@@ -912,6 +931,54 @@ fn test_condition_reserved_parse() {
     assert_eq!(
         parse_condition("NV"),
         IResult::Done("", Condition::Reserved)
+    );
+}
+
+#[test]
+fn test_immediate6_parse() {
+    assert_eq!(
+        parse_immediate_6("25"),
+        IResult::Done("", Immediate6(25_u8))
+    );
+}
+
+#[test]
+fn test_immediate9_parse() {
+    assert_eq!(
+        parse_immediate_9("25"),
+        IResult::Done("", Immediate9(25_u16))
+    );
+}
+
+#[test]
+fn test_immediate12_parse() {
+    assert_eq!(
+        parse_immediate_12("25"),
+        IResult::Done("", Immediate12(25_u16))
+    );
+}
+
+#[test]
+fn test_immediate16_parse() {
+    assert_eq!(
+        parse_immediate_16("25"),
+        IResult::Done("", Immediate16(25_u16))
+    );
+}
+
+#[test]
+fn test_immediate19_parse() {
+    assert_eq!(
+        parse_immediate_19("25"),
+        IResult::Done("", Immediate19(25_u32))
+    );
+}
+
+#[test]
+fn test_immediate26_parse() {
+    assert_eq!(
+        parse_immediate_26("25"),
+        IResult::Done("", Immediate26(25_u32))
     );
 }
 
