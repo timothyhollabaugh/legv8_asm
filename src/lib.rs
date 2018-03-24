@@ -10,4 +10,5 @@ pub mod register;
 pub mod shift16;
 pub mod condition;
 pub mod immediate;
+pub mod generator;
 

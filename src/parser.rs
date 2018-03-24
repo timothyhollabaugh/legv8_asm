@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use nom::digit;
+use nom::newline;
 use nom::IResult;
 
 use register::Register;
@@ -334,6 +335,28 @@ named!(
         (instruction)
     )
 );
+
+/// Parse lines to instructions
+fn parse_lines(lines: &str) -> Vec<IResult<&str, Instruction>> {
+    lines.lines().map(|instruction| parse_instruction(instruction)).collect()
+}
+
+#[test]
+fn test_lines_parse() {
+    assert_eq!(
+        parse_lines("ADD X1, X2, X3\nSUB X4, X5, X6"),
+        vec![
+            IResult::Done(
+                "",
+                Instruction::Add { n: Register::X2, m: Register::X3, destination: Register::X1 },
+            ),
+            IResult::Done(
+                "",
+                Instruction::Subtract { n: Register::X5, m: Register::X6, destination: Register::X4 }
+            )
+        ]
+    )
+}
 
 #[test]
 fn test_branch_link_parse() {
