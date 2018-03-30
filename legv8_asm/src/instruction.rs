@@ -259,8 +259,8 @@ impl From<Instruction> for [Bit; 32] {
                 offset: o,
                 data: d
             } => {
-                result[0..5].copy_from_slice(&<[Bit; 5]>::from(a));
-                result[5..10].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[0..5].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[5..10].copy_from_slice(&<[Bit; 5]>::from(a));
                 result[12..21].copy_from_slice(&<[Bit; 9]>::from(o));
                 result[21..32].copy_from_slice(&bit_array![0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]);
             }
@@ -269,8 +269,8 @@ impl From<Instruction> for [Bit; 32] {
                 offset: o,
                 data: d
             } => {
-                result[0..5].copy_from_slice(&<[Bit; 5]>::from(a));
-                result[5..10].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[0..5].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[5..10].copy_from_slice(&<[Bit; 5]>::from(a));
                 result[12..21].copy_from_slice(&<[Bit; 9]>::from(o));
                 result[21..32].copy_from_slice(&bit_array![0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1]);
             }
@@ -279,8 +279,8 @@ impl From<Instruction> for [Bit; 32] {
                 offset: o,
                 data: d
             } => {
-                result[0..5].copy_from_slice(&<[Bit; 5]>::from(a));
-                result[5..10].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[0..5].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[5..10].copy_from_slice(&<[Bit; 5]>::from(a));
                 result[12..21].copy_from_slice(&<[Bit; 9]>::from(o));
                 result[21..32].copy_from_slice(&bit_array![0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0]);
             }
@@ -289,8 +289,8 @@ impl From<Instruction> for [Bit; 32] {
                 offset: o,
                 data: d
             } => {
-                result[0..5].copy_from_slice(&<[Bit; 5]>::from(a));
-                result[5..10].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[0..5].copy_from_slice(&<[Bit; 5]>::from(d));
+                result[5..10].copy_from_slice(&<[Bit; 5]>::from(a));
                 result[12..21].copy_from_slice(&<[Bit; 9]>::from(o));
                 result[21..32].copy_from_slice(&bit_array![0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0]);
             }
@@ -579,7 +579,7 @@ fn test_store() {
             data: Register::X2
         }),
         bit_array![
-            1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+            0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
             1, 1, 1
         ]
     );
@@ -594,7 +594,7 @@ fn test_load() {
             data: Register::X2
         }),
         bit_array![
-            1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1,
+            0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1,
             1, 1, 1
         ]
     );
@@ -609,7 +609,7 @@ fn test_store_byte() {
             data: Register::X2
         }),
         bit_array![
-            1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+            0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
             1, 0, 0
         ]
     );
@@ -624,7 +624,7 @@ fn test_load_byte() {
             data: Register::X2
         }),
         bit_array![
-            1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1,
+            0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1,
             1, 0, 0
         ]
     );
