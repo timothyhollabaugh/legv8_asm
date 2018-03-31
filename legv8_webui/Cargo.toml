@@ -1,0 +1,11 @@
+[package]
+name = "legv8_webui"
+version = "0.1.0"
+authors = ["Tim <timothyhollabaugh@gmail.com>"]
+
+[lib]
+path="src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+legv8_asm = { path = "../legv8_asm" }

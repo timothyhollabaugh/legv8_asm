@@ -3,10 +3,6 @@ name = "legv8_asm"
 version = "0.1.0"
 authors = ["Tim <timothyhollabaugh@gmail.com>"]
 
-[lib]
-path="src/lib.rs"
-crate-type = ["cdylib"]
-
 [dependencies.nom]
 #path = "../nom"
 version = "4.0.0-beta2"
