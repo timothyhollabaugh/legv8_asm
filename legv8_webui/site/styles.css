@@ -1,0 +1,13 @@
+body {
+    background-color: red;
+}
+
+#input_div {
+    width: calc(50% - 0.5em);
+    display: inline-block;
+}
+
+#output_div {
+    width: calc(50% - 0.5em);
+    display: inline-block;
+}
