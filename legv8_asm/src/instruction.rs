@@ -484,7 +484,7 @@ fn test_subtract() {
 fn test_add_immediate() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::AddImmediate {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -499,7 +499,7 @@ fn test_add_immediate() {
 fn test_subtract_immediate() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::SubtractImmediate {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -544,7 +544,7 @@ fn test_subtract_set_flags() {
 fn test_add_immediate_set_flags() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::AddImmediateSetFlags {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -559,7 +559,7 @@ fn test_add_immediate_set_flags() {
 fn test_subtract_immediate_set_flags() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::SubtractImmediateSetFlags {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -575,7 +575,7 @@ fn test_store() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::Store {
             address: Register::X1,
-            offset: Immediate9(4_u16),
+            offset: Immediate9(4_i16),
             data: Register::X2
         }),
         bit_array![
@@ -590,7 +590,7 @@ fn test_load() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::Load {
             address: Register::X1,
-            offset: Immediate9(4_u16),
+            offset: Immediate9(4_i16),
             data: Register::X2
         }),
         bit_array![
@@ -605,7 +605,7 @@ fn test_store_byte() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::StoreByte {
             address: Register::X1,
-            offset: Immediate9(4_u16),
+            offset: Immediate9(4_i16),
             data: Register::X2
         }),
         bit_array![
@@ -620,7 +620,7 @@ fn test_load_byte() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::LoadByte {
             address: Register::X1,
-            offset: Immediate9(4_u16),
+            offset: Immediate9(4_i16),
             data: Register::X2
         }),
         bit_array![
@@ -634,7 +634,7 @@ fn test_load_byte() {
 fn test_move_zero() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::MoveZero {
-           immediate: Immediate16(5_u16),
+           immediate: Immediate16(5_i16),
            shift: Shift16::Shift16,
            destination: Register::X1
        }),
@@ -649,7 +649,7 @@ fn test_move_zero() {
 fn test_move_keep() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::MoveKeep {
-           immediate: Immediate16(5_u16),
+           immediate: Immediate16(5_i16),
            shift: Shift16::Shift16,
            destination: Register::X1
        }),
@@ -709,7 +709,7 @@ fn test_xor() {
 fn test_and_immediate() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::AndImmediate {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -724,7 +724,7 @@ fn test_and_immediate() {
 fn test_or_immediate() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::OrImmediate {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -739,7 +739,7 @@ fn test_or_immediate() {
 fn test_xor_immediate() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::XorImmediate {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -769,7 +769,7 @@ fn test_and_set_flags() {
 fn test_and_immediate_set_flags() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::AndImmediateSetFlags {
-            m: Immediate12(3_u16),
+            m: Immediate12(3_i16),
             n: Register::X1,
             destination: Register::X3
         }),
@@ -785,7 +785,7 @@ fn test_logical_shift_right() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::LogicalShiftRight {
             n: Register::X1,
-            m: Immediate6(6_u8),
+            m: Immediate6(6_i8),
             destination: Register::X2
         }),
         bit_array![
@@ -800,7 +800,7 @@ fn test_logical_shift_left() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::LogicalShiftLeft {
             n: Register::X1,
-            m: Immediate6(6_u8),
+            m: Immediate6(6_i8),
             destination: Register::X2
         }),
         bit_array![
@@ -814,7 +814,7 @@ fn test_logical_shift_left() {
 fn test_compare_branch_zero() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::CompareBranchZero{
-            address: Immediate19(12_u32),
+            address: Immediate19(12_i32),
             r: Register::X1
         }),
         bit_array![
@@ -828,7 +828,7 @@ fn test_compare_branch_zero() {
 fn test_compare_branch_not_zero() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::CompareBranchNotZero{
-            address: Immediate19(12_u32),
+            address: Immediate19(12_i32),
             r: Register::X1
         }),
         bit_array![
@@ -842,7 +842,7 @@ fn test_compare_branch_not_zero() {
 fn test_conditional_branch() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::ConditionalBranch{
-            address: Immediate19(12_u32),
+            address: Immediate19(12_i32),
             condition: Condition::NoSignedOverflow
         }),
         bit_array![
@@ -856,7 +856,7 @@ fn test_conditional_branch() {
 fn test_branch() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::Branch{
-            address: Immediate26(12_u32)
+            address: Immediate26(12_i32)
         }),
         bit_array![
             0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,
@@ -882,7 +882,7 @@ fn test_branch_register() {
 fn test_branch_link() {
     assert_eq!(
         <[Bit; 32]>::from(Instruction::BranchLink{
-            address: Immediate26(12_u32)
+            address: Immediate26(12_i32)
         }),
         bit_array![
             0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,

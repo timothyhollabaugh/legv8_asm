@@ -11,6 +11,7 @@ var output = CodeMirror(output_div, {
     lineNumbers: true,
     firstLineNumber: 0,
     readOnly: true,
+    mode: "verilog",
 });
 
 request = new XMLHttpRequest();

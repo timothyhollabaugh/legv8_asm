@@ -1,10 +1,10 @@
 use bit::Bit;
 
 #[derive(Debug, PartialEq)]
-pub struct Immediate6(pub u8);
+pub struct Immediate6(pub i8);
 
-impl From<u8> for Immediate6 {
-    fn from(number: u8) -> Immediate6 {
+impl From<i8> for Immediate6 {
+    fn from(number: i8) -> Immediate6 {
         Immediate6(number)
     }
 }
@@ -20,10 +20,10 @@ impl From<Immediate6> for [Bit; 6] {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Immediate9(pub u16);
+pub struct Immediate9(pub i16);
 
-impl From<u16> for Immediate9 {
-    fn from(number: u16) -> Immediate9 {
+impl From<i16> for Immediate9 {
+    fn from(number: i16) -> Immediate9 {
         Immediate9(number)
     }
 }
@@ -39,10 +39,10 @@ impl From<Immediate9> for [Bit; 9] {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Immediate12(pub u16);
+pub struct Immediate12(pub i16);
 
-impl From<u16> for Immediate12 {
-    fn from(number: u16) -> Immediate12 {
+impl From<i16> for Immediate12 {
+    fn from(number: i16) -> Immediate12 {
         Immediate12(number)
     }
 }
@@ -58,10 +58,10 @@ impl From<Immediate12> for [Bit; 12] {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Immediate16(pub u16);
+pub struct Immediate16(pub i16);
 
-impl From<u16> for Immediate16 {
-    fn from(number: u16) -> Immediate16 {
+impl From<i16> for Immediate16 {
+    fn from(number: i16) -> Immediate16 {
         Immediate16(number)
     }
 }
@@ -77,10 +77,10 @@ impl From<Immediate16> for [Bit; 16] {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Immediate19(pub u32);
+pub struct Immediate19(pub i32);
 
-impl From<u32> for Immediate19 {
-    fn from(number: u32) -> Immediate19 {
+impl From<i32> for Immediate19 {
+    fn from(number: i32) -> Immediate19 {
         Immediate19(number)
     }
 }
@@ -96,10 +96,10 @@ impl From<Immediate19> for [Bit; 19] {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Immediate26(pub u32);
+pub struct Immediate26(pub i32);
 
-impl From<u32> for Immediate26 {
-    fn from(number: u32) -> Immediate26 {
+impl From<i32> for Immediate26 {
+    fn from(number: i32) -> Immediate26 {
         Immediate26(number)
     }
 }
@@ -113,3 +113,65 @@ impl From<Immediate26> for [Bit; 26] {
         result
     }
 }
+
+#[test]
+fn test_immediate6() {
+    assert_eq!(<[Bit; 6]>::from(Immediate6(5)), bit_array!(1, 0, 1, 0, 0, 0));
+}
+
+#[test]
+fn test_negative_immediate6() {
+    assert_eq!(<[Bit; 6]>::from(Immediate6(-5)), bit_array!(1, 1, 0, 1, 1, 1));
+}
+
+#[test]
+fn test_immediate9() {
+    assert_eq!(<[Bit; 9]>::from(Immediate9(5)), bit_array!(1, 0, 1, 0, 0, 0, 0, 0, 0));
+}
+
+#[test]
+fn test_negative_immediate9() {
+    assert_eq!(<[Bit; 9]>::from(Immediate9(-5)), bit_array!(1, 1, 0, 1, 1, 1, 1, 1, 1));
+}
+
+#[test]
+fn test_immediate12() {
+    assert_eq!(<[Bit; 12]>::from(Immediate12(5)), bit_array!(1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+}
+
+#[test]
+fn test_negative_immediate12() {
+    assert_eq!(<[Bit; 12]>::from(Immediate12(-5)), bit_array!(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+}
+
+#[test]
+fn test_immediate16() {
+    assert_eq!(<[Bit; 16]>::from(Immediate16(5)), bit_array!(1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+}
+
+#[test]
+fn test_negative_immediate16() {
+    assert_eq!(<[Bit; 16]>::from(Immediate16(-5)), bit_array!(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+}
+
+#[test]
+fn test_immediate19() {
+    assert_eq!(<[Bit; 19]>::from(Immediate19(5)), bit_array!(1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+}
+
+#[test]
+fn test_negative_immediate19() {
+    assert_eq!(<[Bit; 19]>::from(Immediate19(-5)), bit_array!(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+}
+
+#[test]
+fn test_immediate26() {
+    assert_eq!(<[Bit; 26]>::from(Immediate26(5)), bit_array!(1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+}
+
+#[test]
+fn test_negative_immediate26() {
+    assert_eq!(<[Bit; 26]>::from(Immediate26(-5)), bit_array!(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+}
+
+
