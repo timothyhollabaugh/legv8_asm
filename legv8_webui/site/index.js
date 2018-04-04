@@ -7,12 +7,16 @@ var input = CodeMirror(input_div, {
     firstLineNumber: 0,
 });
 
+input.setSize(window.innerWidth/2 - 10, window.innerHeight - 50);
+
 var output = CodeMirror(output_div, {
     lineNumbers: true,
     firstLineNumber: 0,
     readOnly: true,
     mode: "verilog",
 });
+
+output.setSize(window.innerWidth/2 - 10, window.innerHeight - 50);
 
 request = new XMLHttpRequest();
 request.open('GET', 'legv8_webui.wasm');
