@@ -7,7 +7,7 @@ var input = CodeMirror(input_div, {
     firstLineNumber: 0,
 });
 
-input.setSize(window.innerWidth/2 - 10, window.innerHeight - 50);
+input.setSize(window.innerWidth/2 - 10, window.innerHeight - 120);
 
 var output = CodeMirror(output_div, {
     lineNumbers: true,
@@ -16,7 +16,12 @@ var output = CodeMirror(output_div, {
     mode: "verilog",
 });
 
-output.setSize(window.innerWidth/2 - 10, window.innerHeight - 50);
+output.setSize(window.innerWidth/2 - 10, window.innerHeight - 120);
+
+window.onresize = function(event) {
+    input.setSize(window.innerWidth/2 - 10, window.innerHeight - 120);
+    output.setSize(window.innerWidth/2 - 10, window.innerHeight - 120);
+}
 
 request = new XMLHttpRequest();
 request.open('GET', 'legv8_webui.wasm');
