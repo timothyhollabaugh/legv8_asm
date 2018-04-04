@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 use nom::digit;
-use nom::newline;
+use nom::line_ending;
 use nom::IResult;
 use nom::types::CompleteStr;
 
@@ -15,6 +15,14 @@ use immediate::Immediate12;
 use immediate::Immediate16;
 use immediate::Immediate19;
 use immediate::Immediate26;
+
+#[derive(PartialEq, Debug)]
+pub enum AsmLine<'a> {
+    Instruction(Instruction),
+    Comment(&'a str),
+    Blank,
+    Error,
+}
 
 /// Parse a register in the form `X23` to an `instruction::Register`
 named!(
@@ -343,26 +351,65 @@ named!(
     )
 );
 
+named!(
+    parse_line<CompleteStr, AsmLine>,
+    alt!(
+        parse_instruction => { |i| AsmLine::Instruction(i) } |
+        exact!(ws!(tag!(""))) => { |_| AsmLine::Blank }
+        // the closure takes the result as arguNone ment if the parser is successful
+    )
+);
+
 /// Parse lines to instructions
-pub fn parse_lines(lines: &str) -> Vec<IResult<CompleteStr, Instruction>> {
-    lines.lines().map(|instruction| parse_instruction(CompleteStr(instruction))).collect()
+pub fn parse_lines(lines: &str) -> Vec<AsmLine> {
+    lines.lines().map(|line| {
+        if let Ok((_, asm_line)) = parse_line(CompleteStr(line)) {
+            asm_line
+        } else {
+            AsmLine::Error
+        }
+    }).collect()
 }
 
 #[test]
 fn test_lines_parse() {
     assert_eq!(
-        parse_lines("ADD X1, X2, X3\nSUB X4, X5, X6"),
+        parse_lines("ADD X1, X2, X3\n\nSUB X4, X5, X6"),
         vec![
-            Ok((
-                CompleteStr(""),
-                Instruction::Add { n: Register::X2, m: Register::X3, destination: Register::X1 },
-            )),
-            Ok((
-                CompleteStr(""),
-                Instruction::Subtract { n: Register::X5, m: Register::X6, destination: Register::X4 }
-            ))
+            AsmLine::Instruction(Instruction::Add { n: Register::X2, m: Register::X3, destination: Register::X1 }),
+            AsmLine::Blank,
+            AsmLine::Instruction(Instruction::Subtract { n: Register::X5, m: Register::X6, destination: Register::X4 })
         ]
-    )
+    );
+}
+
+#[test]
+fn test_line_instruction_parse() {
+    assert_eq!(
+        parse_line(CompleteStr("ADD X1, X2, X3")),
+        Ok((
+            CompleteStr(""),
+            AsmLine::Instruction(Instruction::Add { n: Register::X2, m: Register::X3, destination: Register::X1 }),
+        ))
+    );
+}
+
+#[test]
+fn test_line_empty_parse() {
+    assert_eq!(
+        parse_line(CompleteStr(" ")),
+        Ok((
+            CompleteStr(""),
+            AsmLine::Blank
+        ))
+    );
+}
+
+#[test]
+fn test_line_error_parse() {
+    assert!(
+        parse_line(CompleteStr("asdfasdf")).is_err()
+    );
 }
 
 #[test]
@@ -1184,7 +1231,6 @@ fn test_register_x30_parse() {
 fn test_register_x31_parse() {
     assert_eq!(parse_register(CompleteStr("X30")), Ok((CompleteStr(""), Register::X30)));
 }
-
 #[test]
 fn test_register_xzr_parse() {
     assert_eq!(parse_register(CompleteStr("XZR")), Ok((CompleteStr(""), Register::XZR)));

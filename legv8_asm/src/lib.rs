@@ -13,30 +13,25 @@ pub mod immediate;
 pub mod generator;
 
 use bit::Bit;
+use parser::AsmLine;
 
 #[no_mangle]
 pub fn parse_to_rom(assembly: &str) -> String {
     let parsed_instructions = parser::parse_lines(assembly);
 
-    let error_lines: Vec<u32>  = parsed_instructions.iter().enumerate().filter_map(|(l, i)|{
-        if i.is_err() {
-            Some(l as u32)
-        } else {
-            None
-        }
-    }).collect();
+    let mut error_lines: Vec<u32> = Vec::new();
+    let mut instruction_lines: Vec<[Bit; 32]> = Vec::new();
 
-    let instructions: Vec<[Bit; 32]> = parsed_instructions.into_iter().filter_map(|i| {
-        if let Some(instr) = i.ok() {
-            Some(instr.1)
-        } else {
-            None}
-    }).map(|i| {
-        i.into()
-    }).collect();
+    for (index, asm_line) in parsed_instructions.into_iter().enumerate() {
+        match asm_line {
+            AsmLine::Instruction(i) => instruction_lines.push(<[Bit; 32]>::from(i)),
+            AsmLine::Error => error_lines.push(index as u32),
+            _ => {}
+        }
+    }
 
     if error_lines.is_empty() {
-        generator::generate_case_rom(instructions)
+        generator::generate_case_rom(instruction_lines)
     } else {
         error_lines.into_iter().fold("".to_owned(), |mut errors, line| {
             errors.push_str(&format!("Error on line {}", line));
@@ -51,6 +46,7 @@ fn test_parse_to_rom() {
         parse_to_rom(
 "STUR X23, [X7, 50]
 ADDI X7, X7, 1
+
 B 6
 "
         ),
